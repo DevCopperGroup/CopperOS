@@ -255,8 +255,8 @@ export const HubPage: React.FC = () => {
           className="relative overflow-hidden rounded-3xl p-5 sm:p-6 bg-gradient-to-r from-emerald-50/90 via-white to-emerald-50/50 dark:from-emerald-950/50 dark:via-[#0B1510] dark:to-[#070F0B] border-2 border-emerald-500/40 hover:border-emerald-500 shadow-card hover:shadow-card-hover dark:shadow-xl dark:hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
         >
           <div className="flex items-center gap-4">
-            <div className="w-13 h-13 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 dark:border-emerald-500/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-[#070F0B] transition-all duration-300 shadow-xs shrink-0">
-              <BarChart3 className="w-6 h-6 stroke-[2.2]" />
+            <div className="w-14 h-14 min-w-[3.5rem] min-h-[3.5rem] rounded-2xl bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300/80 dark:border-emerald-500/40 flex items-center justify-center text-emerald-700 dark:text-emerald-400 group-hover:scale-105 group-hover:bg-emerald-500 group-hover:text-white dark:group-hover:text-[#070F0B] transition-all duration-300 shadow-xs shrink-0">
+              <BarChart3 className="w-7 h-7 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
