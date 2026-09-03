@@ -63,7 +63,7 @@ export const OverviewPage: React.FC = () => {
 
   if (!currentCompany) return null;
 
-  // Exact 8 Core Modules depicted in the user's reference mockup
+  // Apenas módulos com telas dedicadas e funcionais
   const modules: WorkspaceModule[] = [
     {
       id: 'registro',
@@ -88,24 +88,10 @@ export const OverviewPage: React.FC = () => {
     },
     {
       id: 'tarefas',
-      name: 'Tarefas',
-      description: 'Gerencie tarefas, prazos e responsabilidades da equipe.',
+      name: 'Tarefas & Rotinas',
+      description: 'Gerencie tarefas, rotinas diárias da equipe e prazos.',
       icon: ClipboardCheck,
       route: `/companies/${companyId}/tarefas`,
-    },
-    {
-      id: 'automacao',
-      name: 'Automação',
-      description: 'Crie e gerencie automações e processos inteligentes.',
-      icon: Sliders,
-      route: `/companies/${companyId}/modules`,
-    },
-    {
-      id: 'indicadores',
-      name: 'Indicadores',
-      description: 'Visualize métricas, KPIs e performance operacional.',
-      icon: BarChart3,
-      route: `/companies/${companyId}/control-tower`,
     },
     {
       id: 'relatorios',
@@ -115,10 +101,10 @@ export const OverviewPage: React.FC = () => {
       route: `/companies/${companyId}/reports`,
     },
     {
-      id: 'comunicacao',
-      name: 'Comunicação',
-      description: 'Centralize comunicados, mensagens e notificações.',
-      icon: MessageSquare,
+      id: 'configuracoes',
+      name: 'Configurações',
+      description: 'Ajuste parâmetros da empresa, dados cadastrais e preferências.',
+      icon: Sliders,
       route: `/companies/${companyId}/settings`,
     },
   ];
@@ -244,23 +230,20 @@ export const OverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Modules Section Header + Personalizar Button */}
+      {/* Main Modules Section Header */}
       <div className="flex items-center justify-between pt-2">
-        <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
-          Módulos principais
-        </h2>
-
-        <button
-          onClick={() => navigate(`/companies/${companyId}/modules`)}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-night-900 border border-gray-200/80 dark:border-night-800 hover:border-emerald-500 dark:hover:border-emerald-500 text-xs font-semibold text-brand-700 dark:text-brand-400 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-card transition-all cursor-pointer"
-        >
-          <SlidersHorizontal className="w-3.5 h-3.5" />
-          <span>Personalizar módulos</span>
-        </button>
+        <div className="flex items-center gap-2.5">
+          <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+            Módulos operacionais
+          </h2>
+          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            {modules.length} ativos
+          </span>
+        </div>
       </div>
 
-      {/* 8 Main Square Modules Grid (Exact Match to Screenshot) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* 6 Main Modules Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {modules.map((mod) => {
           const IconComp = mod.icon;
           return (
