@@ -13,6 +13,7 @@ import { TarefasPage } from './pages/TarefasPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { ModulesPage } from './pages/ModulesPage';
 import { CompanySettingsPage } from './pages/CompanySettingsPage';
+import { GeneralDashboardPage } from './pages/GeneralDashboardPage';
 
 const RootRedirect: React.FC = () => {
   const { isAuthenticated } = useCopperOS();
@@ -38,6 +39,22 @@ export const App: React.FC = () => {
               <ProtectedRoute>
                 <HubPage />
               </ProtectedRoute>
+            } 
+          />
+
+          {/* Protected General / Holding Executive Dashboard */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <GeneralDashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/general-dashboard" 
+            element={
+              <Navigate to="/dashboard" replace />
             } 
           />
 

@@ -7,7 +7,9 @@ import {
   X,
   Moon,
   Sun,
-  ShieldCheck
+  ShieldCheck,
+  BarChart3,
+  ArrowRight
 } from 'lucide-react';
 import { useCopperOS } from '../context/CopperOSContext';
 import { CopperLogo } from '../components/common/CopperLogo';
@@ -103,6 +105,17 @@ export const HubPage: React.FC = () => {
     >
       {/* Top Bar with Dark Mode Toggle & User & Logout */}
       <div className="max-w-6xl w-full mx-auto flex items-center justify-end gap-3 mb-2">
+        {/* Botão de Destaque: Dashboard Geral da Holding */}
+        <button
+          onClick={() => navigate('/dashboard')}
+          type="button"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-[#070F0B] font-bold text-xs shadow-xs hover:shadow-emerald-500/20 transition-all cursor-pointer"
+          title="Acessar Dashboard Geral da Holding"
+        >
+          <BarChart3 className="w-3.5 h-3.5" />
+          <span>Dashboard Geral</span>
+        </button>
+
         {/* Botão de Controle de TI.
             Este gate é apenas de apresentação: quem autoriza de fato é o RBAC
             do servidor em /api/users, que relê o papel no banco a cada chamada. */}
@@ -233,6 +246,45 @@ export const HubPage: React.FC = () => {
                 <X className="w-4 h-4" />
               </button>
             )}
+          </div>
+        </div>
+
+        {/* Hero CTA Card: Dashboard Geral da Holding (Diferenciado) */}
+        <div 
+          onClick={() => navigate('/dashboard')}
+          className="relative overflow-hidden rounded-3xl p-5 sm:p-6 bg-gradient-to-r from-emerald-950/50 via-[#0B1510] to-[#070F0B] border-2 border-emerald-500/40 hover:border-emerald-400 shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-13 h-13 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-[#070F0B] transition-all duration-300 shadow-xs shrink-0">
+              <BarChart3 className="w-6 h-6 stroke-[2.2]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
+                  Holding Copper Group
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-[#070F0B]">
+                  Visão Consolidada
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mt-1">
+                Dashboard Geral da Holding
+              </h2>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 max-w-xl leading-relaxed">
+                Telemetria executiva em tempo real: faturamento consolidado, ordens ativas e conformidade operacional de todas as 4 unidades.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-emerald-500/20">
+            <div className="flex flex-col text-left sm:text-right font-mono">
+              <span className="text-xs font-bold text-emerald-400">R$ 4.82M MTD</span>
+              <span className="text-[10px] text-gray-400">4 unidades ativas</span>
+            </div>
+            <div className="px-4 py-2.5 rounded-xl bg-emerald-500 group-hover:bg-emerald-400 text-[#070F0B] font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors shrink-0">
+              <span>Acessar Painel Executivo</span>
+              <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+            </div>
           </div>
         </div>
 
