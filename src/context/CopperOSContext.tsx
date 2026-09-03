@@ -31,7 +31,7 @@ interface CopperOSContextType {
   
   // Auth state
   isAuthenticated: boolean;
-  loginSession: () => void;
+  loginSession: (token?: string, userData?: Partial<User>) => void;
   logoutSession: () => void;
 
   // Data for current company
@@ -64,17 +64,39 @@ interface CopperOSContextType {
 const CopperOSContext = createContext<CopperOSContextType | undefined>(undefined);
 
 export const CopperOSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('copperos_session_auth_token') === 'CP_SEC_TOKEN_ACTIVE';
+  const [currentUser, setCurrentUser] = useState<User>(() => {
+    try {
+      const saved = localStorage.getItem('copperos_user_data');
+      return saved ? JSON.parse(saved) : initialUser;
+    } catch {
+      return initialUser;
+    }
   });
 
-  const loginSession = () => {
-    sessionStorage.setItem('copperos_session_auth_token', 'CP_SEC_TOKEN_ACTIVE');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return !!sessionStorage.getItem('copperos_session_auth_token');
+  });
+
+  const loginSession = (token?: string, userData?: Partial<User>) => {
+    sessionStorage.setItem('copperos_session_auth_token', token || 'CP_SEC_TOKEN_ACTIVE');
+    if (userData) {
+      setCurrentUser(prev => {
+        const updated = {
+          ...prev,
+          ...userData,
+          name: userData.name || prev.name,
+          email: userData.email || prev.email,
+        };
+        localStorage.setItem('copperos_user_data', JSON.stringify(updated));
+        return updated;
+      });
+    }
     setIsAuthenticated(true);
   };
 
   const logoutSession = () => {
     sessionStorage.removeItem('copperos_session_auth_token');
+    localStorage.removeItem('copperos_user_data');
     setIsAuthenticated(false);
   };
 
@@ -302,7 +324,7 @@ export const CopperOSProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     <CopperOSContext.Provider
       value={{
         organization: mockOrganization,
-        user: initialUser,
+        user: currentUser,
         companies,
         currentCompany,
         currentCompanyId,
