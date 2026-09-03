@@ -42,6 +42,63 @@ export interface ManagedUser {
   };
 }
 
+/**
+ * Fetch seguro com Interceptor para Renovação Silenciosa de Token JWT (Silent Refresh)
+ */
+async function authenticatedFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  let token = sessionStorage.getItem('copperos_session_auth_token') || '';
+
+  // Se o token for mock ou inexistente, tenta buscar um token real via Cookie HttpOnly
+  if (!token || token === 'CP_SEC_TOKEN_ACTIVE') {
+    try {
+      const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        if (refreshData.accessToken) {
+          token = refreshData.accessToken;
+          sessionStorage.setItem('copperos_session_auth_token', token);
+        }
+      }
+    } catch {
+      // Ignora erro
+    }
+  }
+
+  const headers = new Headers(options.headers || {});
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  let res = await fetch(url, { ...options, headers, credentials: 'include' });
+
+  // Se deu 401 (token expirou durante o uso), tenta refresh e re-executa a requisição
+  if (res.status === 401) {
+    try {
+      const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (refreshRes.ok) {
+        const refreshData = await refreshRes.json();
+        if (refreshData.accessToken) {
+          token = refreshData.accessToken;
+          sessionStorage.setItem('copperos_session_auth_token', token);
+          headers.set('Authorization', `Bearer ${token}`);
+          res = await fetch(url, { ...options, headers, credentials: 'include' });
+        }
+      }
+    } catch {
+      // Falha no refresh
+    }
+  }
+
+  return res;
+}
+
 export const authApi = {
   async register(name: string, email: string, password: string): Promise<AuthResponse> {
     const res = await fetch(`${API_BASE_URL}/register`, {
@@ -97,14 +154,8 @@ export const authApi = {
     }
   },
 
-  async getProfile(accessToken: string) {
-    const res = await fetch(`${API_BASE_URL}/me`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
-    });
-
+  async getProfile() {
+    const res = await authenticatedFetch(`${API_BASE_URL}/me`);
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || 'Não autorizado');
@@ -113,14 +164,8 @@ export const authApi = {
   },
 
   // ── Módulo de TI e Gestão de Usuários ─────────────────────
-  async listUsers(accessToken: string): Promise<ManagedUser[]> {
-    const res = await fetch(USERS_API_URL, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
-    });
-
+  async listUsers(): Promise<ManagedUser[]> {
+    const res = await authenticatedFetch(USERS_API_URL);
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || 'Erro ao carregar usuários');
@@ -128,25 +173,18 @@ export const authApi = {
     return data.users;
   },
 
-  async createUser(
-    accessToken: string,
-    userData: {
-      fullName: string;
-      email: string;
-      password: string;
-      role: string;
-      department: string;
-      jobTitle: string;
-      companyIds: string[];
-    }
-  ): Promise<ManagedUser> {
-    const res = await fetch(USERS_API_URL, {
+  async createUser(userData: {
+    fullName: string;
+    email: string;
+    password: string;
+    role: string;
+    department: string;
+    jobTitle: string;
+    companyIds: string[];
+  }): Promise<ManagedUser> {
+    const res = await authenticatedFetch(USERS_API_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),
     });
 
@@ -157,14 +195,10 @@ export const authApi = {
     return data.user;
   },
 
-  async updateUserStatus(accessToken: string, userId: string, status: string): Promise<void> {
-    const res = await fetch(`${USERS_API_URL}/${userId}/status`, {
+  async updateUserStatus(userId: string, status: string): Promise<void> {
+    const res = await authenticatedFetch(`${USERS_API_URL}/${userId}/status`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
     });
 
@@ -174,14 +208,10 @@ export const authApi = {
     }
   },
 
-  async updateUserRole(accessToken: string, userId: string, role: string): Promise<void> {
-    const res = await fetch(`${USERS_API_URL}/${userId}/role`, {
+  async updateUserRole(userId: string, role: string): Promise<void> {
+    const res = await authenticatedFetch(`${USERS_API_URL}/${userId}/role`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role }),
     });
 
@@ -191,14 +221,10 @@ export const authApi = {
     }
   },
 
-  async resetUserPassword(accessToken: string, userId: string, newPassword: string): Promise<void> {
-    const res = await fetch(`${USERS_API_URL}/${userId}/reset-password`, {
+  async resetUserPassword(userId: string, newPassword: string): Promise<void> {
+    const res = await authenticatedFetch(`${USERS_API_URL}/${userId}/reset-password`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ newPassword }),
     });
 
@@ -208,13 +234,9 @@ export const authApi = {
     }
   },
 
-  async revokeUserSessions(accessToken: string, userId: string): Promise<string> {
-    const res = await fetch(`${USERS_API_URL}/${userId}/sessions`, {
+  async revokeUserSessions(userId: string): Promise<string> {
+    const res = await authenticatedFetch(`${USERS_API_URL}/${userId}/sessions`, {
       method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
     });
 
     const data = await res.json();

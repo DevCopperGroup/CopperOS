@@ -53,10 +53,10 @@ export const ITAdminModal: React.FC<ITAdminModalProps> = ({ isOpen, onClose }) =
   const loadUsers = async () => {
     setIsLoading(true);
     try {
-      const data = await authApi.listUsers(token);
+      const data = await authApi.listUsers();
       setUsers(data);
     } catch (err: any) {
-      console.warn('Usando lista local de contingência:', err);
+      console.warn('Erro ao carregar usuários:', err);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +73,7 @@ export const ITAdminModal: React.FC<ITAdminModalProps> = ({ isOpen, onClose }) =
     if (!createForm.email || !createForm.password || !createForm.fullName) return;
 
     try {
-      await authApi.createUser(token, createForm);
+      await authApi.createUser(createForm);
       setFeedback({ type: 'success', message: `Colaborador ${createForm.fullName} provisionado com sucesso!` });
       setIsCreateOpen(false);
       setCreateForm({
@@ -94,7 +94,7 @@ export const ITAdminModal: React.FC<ITAdminModalProps> = ({ isOpen, onClose }) =
   const handleToggleStatus = async (user: ManagedUser) => {
     const nextStatus = user.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
     try {
-      await authApi.updateUserStatus(token, user.id, nextStatus);
+      await authApi.updateUserStatus(user.id, nextStatus);
       setFeedback({
         type: 'success',
         message: `Status do usuário ${user.profile?.fullName || user.email} alterado para ${nextStatus}.`,
@@ -110,7 +110,7 @@ export const ITAdminModal: React.FC<ITAdminModalProps> = ({ isOpen, onClose }) =
     if (!selectedUserForPassword || !newPassword) return;
 
     try {
-      await authApi.resetUserPassword(token, selectedUserForPassword.id, newPassword);
+      await authApi.resetUserPassword(selectedUserForPassword.id, newPassword);
       setFeedback({
         type: 'success',
         message: `Senha de ${selectedUserForPassword.profile?.fullName || selectedUserForPassword.email} redefinida com sucesso. Todas as sessões anteriores foram revogadas.`,
@@ -126,7 +126,7 @@ export const ITAdminModal: React.FC<ITAdminModalProps> = ({ isOpen, onClose }) =
     if (!confirm(`Deseja revogar todas as sessões ativas de ${user.profile?.fullName || user.email}? O usuário será deslogado imediatamente.`)) return;
 
     try {
-      const msg = await authApi.revokeUserSessions(token, user.id);
+      const msg = await authApi.revokeUserSessions(user.id);
       setFeedback({ type: 'success', message: msg || 'Sessões revogadas com sucesso' });
       loadUsers();
     } catch (err: any) {
