@@ -25,7 +25,8 @@ router.post(
 router.post('/refresh', (req, res) => authController.refresh(req, res));
 router.post('/logout', (req, res) => authController.logout(req, res));
 
-// Rota protegida por JWT
+// Rotas protegidas por JWT
 router.get('/me', authenticate, (req, res) => authController.me(req, res));
+router.put('/profile', authenticate, (req, res) => authController.updateProfile(req, res));
 
 export const authRoutes = router;

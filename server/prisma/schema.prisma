@@ -7,21 +7,83 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// ── Níveis de Acesso (RBAC) ──────────────────────────────────
+enum UserRole {
+  SUPERADMIN
+  ADMIN
+  MANAGER
+  OPERATOR
+  VIEWER
+}
+
+// ── Status da Conta ──────────────────────────────────────────
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+// ── Modelo de Usuário (Autenticação e Segurança) ─────────────
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
-  name          String?
-  passwordHash  String         @map("password_hash")
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  refreshTokens RefreshToken[]
+  id               String              @id @default(uuid())
+  email            String              @unique
+  passwordHash     String              @map("password_hash")
+  role             UserRole            @default(VIEWER)
+  status           UserStatus          @default(ACTIVE)
+  twoFactorEnabled Boolean             @default(false) @map("two_factor_enabled")
+  lastLoginAt      DateTime?           @map("last_login_at")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+
+  // Relacionamentos
+  profile          Profile?
+  refreshTokens    RefreshToken[]
+  companyAccess    UserCompanyAccess[]
 
   @@map("users")
 }
 
+// ── Modelo de Perfil (Dados Pessoais e Profissionais) ─────────
+model Profile {
+  id                      String    @id @default(uuid())
+  userId                  String    @unique @map("user_id")
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName                String    @map("full_name")
+  displayName             String?   @map("display_name")
+  avatarUrl               String?   @map("avatar_url")
+  phone                   String?
+  jobTitle                String?   @map("job_title")       // Cargo: Ex: "Diretor de Operações"
+  department              String?   @map("department")      // Departamento: Ex: "Engenharia"
+  document                String?   @map("document")        // CPF / Matrícula Funcional
+  bio                     String?   @db.Text
+  timezone                String    @default("America/Sao_Paulo")
+  locale                  String    @default("pt-BR")
+  themePreference         String    @default("dark")        @map("theme_preference")
+  notificationPreferences Json?     @map("notification_preferences")
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+// ── Vínculo de Acesso a Empresas do Grupo Copper ─────────────
+model UserCompanyAccess {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId      String   @map("company_id")                // Ex: "emp-copper-group", "emp-alfa"
+  roleInCompany  String?  @default("MEMBER") @map("role_in_company")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, companyId])
+  @@map("user_company_access")
+}
+
+// ── Modelo de Sessões e Refresh Tokens ───────────────────────
 model RefreshToken {
   id        String   @id @default(uuid())
-  token     String   @unique
+  token     String   @unique                                // Hash SHA-256 do token
   userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime @map("expires_at")

@@ -5,7 +5,7 @@ import { RegisterInput, LoginInput } from '../schemas/auth.schema.js';
 
 export class AuthService {
   /**
-   * Registra um novo usuário com senha em hash bcrypt (salt factor 12)
+   * Registra um novo usuário criando o User e o Profile associado atomicamente
    */
   async register(data: RegisterInput) {
     const existingUser = await prisma.user.findUnique({
@@ -22,14 +22,41 @@ export class AuthService {
     const user = await prisma.user.create({
       data: {
         email: data.email,
-        name: data.name,
         passwordHash,
+        role: 'ADMIN', // Primeiro usuário ou padrão configurável
+        status: 'ACTIVE',
+        profile: {
+          create: {
+            fullName: data.name || 'Usuário CopperOS',
+            displayName: data.name?.split(' ')[0] || 'Usuário',
+            timezone: 'America/Sao_Paulo',
+            locale: 'pt-BR',
+            themePreference: 'dark',
+          },
+        },
+        companyAccess: {
+          create: {
+            companyId: 'emp-copper-group', // Acesso padrão à holding
+            roleInCompany: 'ADMIN',
+          },
+        },
       },
       select: {
         id: true,
         email: true,
-        name: true,
+        role: true,
+        status: true,
         createdAt: true,
+        profile: {
+          select: {
+            id: true,
+            fullName: true,
+            displayName: true,
+            avatarUrl: true,
+            jobTitle: true,
+            department: true,
+          },
+        },
       },
     });
 
@@ -37,16 +64,23 @@ export class AuthService {
   }
 
   /**
-   * Autentica usuário e emite par de tokens (Access + Refresh).
-   * O Refresh Token é salvo no banco como HASH SHA-256.
+   * Autentica usuário, atualiza lastLoginAt e emite par de tokens
    */
   async login(data: LoginInput) {
     const user = await prisma.user.findUnique({
       where: { email: data.email },
+      include: {
+        profile: true,
+        companyAccess: true,
+      },
     });
 
     if (!user) {
       throw new Error('Credenciais inválidas');
+    }
+
+    if (user.status !== 'ACTIVE') {
+      throw new Error('Conta inativa ou suspensa. Entre em contato com o suporte.');
     }
 
     const isPasswordValid = await bcrypt.compare(data.password, user.passwordHash);
@@ -54,13 +88,19 @@ export class AuthService {
       throw new Error('Credenciais inválidas');
     }
 
+    // Atualiza data do último login
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
     // Gera Access Token (JWT curto)
     const accessToken = generateAccessToken({
       sub: user.id,
       email: user.email,
     });
 
-    // Gera Refresh Token bruto para o cliente e armazena apenas o hash no PostgreSQL
+    // Gera Refresh Token bruto para o cliente e armazena apenas o hash SHA-256 no PostgreSQL
     const { token: rawRefreshToken, expiresAt } = generateRefreshToken();
     const tokenHash = hashToken(rawRefreshToken);
 
@@ -76,7 +116,11 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
+        name: user.profile?.fullName || 'Usuário CopperOS',
+        role: user.role,
+        status: user.status,
+        profile: user.profile,
+        companyAccess: user.companyAccess.map((c) => c.companyId),
       },
       accessToken,
       refreshToken: rawRefreshToken,
@@ -95,10 +139,7 @@ export class AuthService {
       include: { user: true },
     });
 
-    // Se o token não existe, está revogado ou expirou
     if (!savedToken || savedToken.revoked || new Date() > savedToken.expiresAt) {
-      // Se estava revogado mas foi reenviado (possível ataque de replay/roubo de token)
-      // Revoga TODAS as sessões do usuário imediatamente como medida de segurança proativa
       if (savedToken && savedToken.revoked) {
         await prisma.refreshToken.updateMany({
           where: { userId: savedToken.userId },
@@ -152,7 +193,7 @@ export class AuthService {
   }
 
   /**
-   * Limpeza de tokens expirados no banco de dados (previne inchaço de tabela)
+   * Limpeza periódica de tokens expirados
    */
   async cleanupExpiredTokens() {
     return prisma.refreshToken.deleteMany({
@@ -166,7 +207,7 @@ export class AuthService {
   }
 
   /**
-   * Obtém os dados do perfil do usuário autenticado
+   * Obtém os dados completos do usuário e perfil
    */
   async getUserProfile(userId: string) {
     const user = await prisma.user.findUnique({
@@ -174,9 +215,19 @@ export class AuthService {
       select: {
         id: true,
         email: true,
-        name: true,
+        role: true,
+        status: true,
+        twoFactorEnabled: true,
+        lastLoginAt: true,
         createdAt: true,
         updatedAt: true,
+        profile: true,
+        companyAccess: {
+          select: {
+            companyId: true,
+            roleInCompany: true,
+          },
+        },
       },
     });
 
@@ -185,6 +236,34 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  /**
+   * Atualiza os dados do perfil do usuário
+   */
+  async updateProfile(userId: string, data: {
+    fullName?: string;
+    displayName?: string;
+    avatarUrl?: string;
+    phone?: string;
+    jobTitle?: string;
+    department?: string;
+    bio?: string;
+    themePreference?: string;
+  }) {
+    const profile = await prisma.profile.upsert({
+      where: { userId },
+      create: {
+        userId,
+        fullName: data.fullName || 'Usuário CopperOS',
+        ...data,
+      },
+      update: {
+        ...data,
+      },
+    });
+
+    return profile;
   }
 }
 
