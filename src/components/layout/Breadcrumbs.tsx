@@ -20,29 +20,29 @@ export const Breadcrumbs: React.FC = () => {
     <nav className="flex items-center text-xs text-gray-500 space-x-1.5 overflow-x-auto whitespace-nowrap">
       <Link 
         to="/hub" 
-        className="flex items-center gap-1 hover:text-emerald-600 transition-colors text-gray-700 font-semibold"
+        className="flex items-center gap-1 hover:text-brand-700 dark:hover:text-brand-400 transition-colors text-gray-700 font-semibold"
       >
         <span>CopperOS</span>
       </Link>
 
       {pathnames.length === 0 || pathnames[0] === 'hub' ? (
         <>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+          <ChevronRight className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 flex-shrink-0" />
           <span className="text-gray-900 font-medium">Hub Corporativo</span>
         </>
       ) : (
         <>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-          <Link to="/hub" className="hover:text-emerald-600 transition-colors text-gray-500">
+          <ChevronRight className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 flex-shrink-0" />
+          <Link to="/hub" className="hover:text-brand-700 dark:hover:text-brand-400 transition-colors text-gray-500">
             Empresas
           </Link>
           
           {currentCompany && (
             <>
-              <ChevronRight className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+              <ChevronRight className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 flex-shrink-0" />
               <Link 
                 to={`/companies/${currentCompany.id}`}
-                className="hover:text-emerald-600 transition-colors text-gray-700 font-medium"
+                className="hover:text-brand-700 dark:hover:text-brand-400 transition-colors text-gray-700 font-medium"
               >
                 {currentCompany.tradeName}
               </Link>
@@ -51,8 +51,8 @@ export const Breadcrumbs: React.FC = () => {
 
           {pathnames.length > 2 && (
             <>
-              <ChevronRight className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-              <span className="text-emerald-600 font-semibold">
+              <ChevronRight className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 flex-shrink-0" />
+              <span className="text-brand-700 dark:text-brand-400 font-semibold">
                 {getModuleName(pathnames[2])}
               </span>
             </>

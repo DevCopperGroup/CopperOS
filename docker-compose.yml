@@ -1,0 +1,67 @@
+services:
+  # ── 1. Banco de Dados PostgreSQL ───────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: copperos_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-copperos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-copperos_secret_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-copperos_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-copperos} -d ${POSTGRES_DB:-copperos_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - copperos_network
+
+  # ── 2. Backend API (Node.js + Express + Prisma) ─────────────
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: copperos_backend
+    restart: always
+    environment:
+      PORT: 3333
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-copperos}:${POSTGRES_PASSWORD:-copperos_secret_2026}@postgres:5432/${POSTGRES_DB:-copperos_db}?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-copperos_jwt_access_secret_production_key_998877}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-copperos_jwt_refresh_secret_production_key_112233}
+      JWT_ACCESS_EXPIRES_IN: "15m"
+      JWT_REFRESH_EXPIRES_DAYS: 7
+      CLIENT_URL: ${CLIENT_URL:-http://localhost}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - copperos_network
+
+  # ── 3. Frontend Web (React + Vite + Nginx Proxy) ───────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: copperos_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - copperos_network
+
+# ── Volumes Persistentes ─────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local
+
+# ── Rede Interna Isolada ─────────────────────────────────────
+networks:
+  copperos_network:
+    driver: bridge

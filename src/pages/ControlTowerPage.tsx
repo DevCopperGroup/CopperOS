@@ -48,7 +48,7 @@ export const ControlTowerPage: React.FC = () => {
 
         {/* View Mode Toggle & Fullscreen */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-white dark:bg-[#0A140F] border border-gray-200 dark:border-[#16291E] rounded-xl p-0.5 shadow-xs">
+          <div className="flex items-center bg-white dark:bg-night-900 border border-gray-200 dark:border-night-800 rounded-xl p-0.5 shadow-xs">
             <button
               onClick={() => setViewMode('Mapa')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
@@ -73,8 +73,8 @@ export const ControlTowerPage: React.FC = () => {
 
           <button 
             onClick={() => alert('Modo tela cheia')}
-            className="p-2 rounded-xl bg-white dark:bg-[#0A140F] border border-gray-200 dark:border-[#16291E] text-gray-400 hover:text-gray-700 dark:hover:text-white shadow-xs cursor-pointer"
-            title="Expandir tela"
+            className="p-2 rounded-xl bg-white dark:bg-night-900 border border-gray-200 dark:border-night-800 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white shadow-xs cursor-pointer"
+            aria-label="Expandir tela" title="Expandir tela"
           >
             <Maximize2 className="w-4 h-4" />
           </button>
@@ -85,73 +85,73 @@ export const ControlTowerPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Side: 4 Vertical Metric Counters */}
         <div className="lg:col-span-3 space-y-4">
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs">
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+          <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Frota ativa
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
               24
             </div>
-            <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+            <div className="text-micro text-gray-600 dark:text-gray-400 mt-0.5">
               de 28 veículos
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs">
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+          <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Em trânsito
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
               16
             </div>
-            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5 font-medium">
+            <div className="text-micro text-brand-700 dark:text-brand-400 mt-0.5 font-medium">
               67% da frota
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs">
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+          <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Entregas hoje
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
               42
             </div>
-            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5 font-medium">
+            <div className="text-micro text-brand-700 dark:text-brand-400 mt-0.5 font-medium">
               Concluídas: 31
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs">
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+          <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Atrasos
             </div>
             <div className="text-2xl font-bold text-rose-500 mt-1">
               3
             </div>
-            <div className="text-[10px] text-rose-500 mt-0.5 font-medium">
+            <div className="text-micro text-rose-500 mt-0.5 font-medium">
               Requer atenção
             </div>
           </div>
         </div>
 
         {/* Right Side: Map Canvas (Matching exact route graphics in mockup) */}
-        <div className="lg:col-span-9 bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] rounded-3xl shadow-xs overflow-hidden relative min-h-[440px] flex flex-col justify-between">
+        <div className="lg:col-span-9 bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 rounded-3xl shadow-xs overflow-hidden relative min-h-[440px] flex flex-col justify-between">
           {/* Mockup Map Canvas */}
-          <div className="relative w-full h-[400px] sm:h-[440px] bg-[#EEF2F0] dark:bg-[#0E1A14]/80 overflow-hidden">
+          <div className="relative w-full h-[400px] sm:h-[440px] bg-gray-100 dark:bg-night-850/80 overflow-hidden">
             {/* Subtle street map pattern */}
             <div className="absolute inset-0 opacity-20 dark:opacity-10 bg-[radial-gradient(#10B981_1px,transparent_1px)] [background-size:16px_16px]" />
 
             {/* City District Labels */}
-            <span className="absolute top-10 left-1/3 text-[10px] uppercase font-bold tracking-widest text-gray-400/70 select-none">
+            <span className="absolute top-10 left-1/3 text-micro uppercase font-bold tracking-widest text-gray-600 dark:text-gray-400/70 select-none">
               Vila Nova
             </span>
-            <span className="absolute top-1/3 left-1/2 -translate-x-1/2 text-[11px] uppercase font-bold tracking-widest text-gray-500/70 select-none">
+            <span className="absolute top-1/3 left-1/2 -translate-x-1/2 text-xs uppercase font-bold tracking-widest text-gray-500/70 select-none">
               Centro
             </span>
-            <span className="absolute bottom-16 left-1/3 text-[10px] uppercase font-bold tracking-widest text-gray-400/70 select-none">
+            <span className="absolute bottom-16 left-1/3 text-micro uppercase font-bold tracking-widest text-gray-600 dark:text-gray-400/70 select-none">
               Jardim América
             </span>
-            <span className="absolute top-1/2 right-8 text-[10px] uppercase font-bold tracking-widest text-gray-400/70 select-none">
+            <span className="absolute top-1/2 right-8 text-micro uppercase font-bold tracking-widest text-gray-600 dark:text-gray-400/70 select-none">
               Distrito Industrial
             </span>
 
@@ -187,7 +187,7 @@ export const ControlTowerPage: React.FC = () => {
               <div
                 key={v.id}
                 style={{ left: `${v.x}%`, top: `${v.y}%` }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-white dark:bg-[#070F0B] border border-gray-200/90 dark:border-[#16291E] rounded-xl px-2.5 py-1 shadow-md hover:scale-105 transition-transform cursor-pointer"
+                className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-white dark:bg-night-950 border border-gray-200/90 dark:border-night-800 rounded-xl px-2.5 py-1 shadow-md hover:scale-105 transition-transform cursor-pointer"
               >
                 <div className={`w-5 h-5 rounded-lg flex items-center justify-center text-white ${
                   v.status === 'Parado' ? 'bg-amber-500' : 'bg-emerald-500'
@@ -195,11 +195,11 @@ export const ControlTowerPage: React.FC = () => {
                   <Truck className="w-3 h-3" />
                 </div>
                 <div className="leading-none text-left">
-                  <div className="text-[10px] font-bold text-gray-900 dark:text-white">
+                  <div className="text-micro font-bold text-gray-900 dark:text-white">
                     {v.name}
                   </div>
-                  <div className={`text-[8px] font-semibold ${
-                    v.status === 'Parado' ? 'text-amber-500' : 'text-emerald-600 dark:text-emerald-400'
+                  <div className={`text-micro font-semibold ${
+                    v.status === 'Parado' ? 'text-amber-500' : 'text-brand-700 dark:text-brand-400'
                   }`}>
                     {v.speed}
                   </div>
@@ -218,7 +218,7 @@ export const ControlTowerPage: React.FC = () => {
           </h2>
           <button 
             onClick={() => alert('Visualizar todos os alertas')}
-            className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
+            className="text-xs font-semibold text-brand-700 dark:text-brand-400 hover:underline cursor-pointer"
           >
             Ver todos
           </button>
@@ -226,7 +226,7 @@ export const ControlTowerPage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Alert 1 */}
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs flex items-center gap-3 transition-colors">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs flex items-center gap-3 transition-colors">
             <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center flex-shrink-0">
               <AlertTriangle className="w-4 h-4" />
             </div>
@@ -234,10 +234,10 @@ export const ControlTowerPage: React.FC = () => {
               <div className="text-xs font-bold text-gray-900 dark:text-white truncate">
                 TRK-021
               </div>
-              <div className="text-[11px] text-rose-500 font-medium">
+              <div className="text-xs text-rose-500 font-medium">
                 Parado há 45 min
               </div>
-              <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 flex items-center justify-between">
+              <div className="text-micro text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-between">
                 <span className="truncate">R. das Indústrias, 123</span>
                 <span>09:15</span>
               </div>
@@ -245,7 +245,7 @@ export const ControlTowerPage: React.FC = () => {
           </div>
 
           {/* Alert 2 */}
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs flex items-center gap-3 transition-colors">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs flex items-center gap-3 transition-colors">
             <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center flex-shrink-0">
               <Clock className="w-4 h-4" />
             </div>
@@ -253,10 +253,10 @@ export const ControlTowerPage: React.FC = () => {
               <div className="text-xs font-bold text-gray-900 dark:text-white truncate">
                 TRK-012
               </div>
-              <div className="text-[11px] text-amber-500 font-medium">
+              <div className="text-xs text-amber-500 font-medium">
                 Manutenção preventiva
               </div>
-              <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 flex items-center justify-between">
+              <div className="text-micro text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-between">
                 <span>Agendada para hoje</span>
                 <span>08:50</span>
               </div>
@@ -264,18 +264,18 @@ export const ControlTowerPage: React.FC = () => {
           </div>
 
           {/* Alert 3 */}
-          <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs flex items-center gap-3 transition-colors">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 flex items-center justify-center flex-shrink-0">
+          <div className="p-3.5 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs flex items-center gap-3 transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0">
               <CheckCircle2 className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-xs font-bold text-gray-900 dark:text-white truncate">
                 TRK-003
               </div>
-              <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+              <div className="text-xs text-brand-700 dark:text-brand-400 font-medium">
                 Entrega concluída
               </div>
-              <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 flex items-center justify-between">
+              <div className="text-micro text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-between">
                 <span className="truncate">Cliente: Metalúrgica São João</span>
                 <span>08:20</span>
               </div>

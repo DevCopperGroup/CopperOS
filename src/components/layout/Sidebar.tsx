@@ -91,8 +91,8 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar Container */}
       <aside className={`
         fixed top-16 bottom-0 left-0 z-20 w-60
-        bg-white dark:bg-[#070F0B]
-        border-r border-gray-100 dark:border-[#16291E]
+        bg-white dark:bg-night-950
+        border-r border-gray-100 dark:border-night-800
         flex flex-col justify-between py-6 px-3
         transition-transform duration-200 ease-in-out lg:translate-x-0
         ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -114,15 +114,15 @@ export const Sidebar: React.FC = () => {
                 className={`
                   flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 group
                   ${isActive 
-                    ? 'bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-semibold' 
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#0E1A14]'
+                    ? 'bg-emerald-50/80 dark:bg-emerald-950/40 text-brand-700 dark:text-brand-400 font-semibold' 
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-night-850'
                   }
                 `}
               >
                 <IconComponent className={`w-4 h-4 flex-shrink-0 transition-colors ${
                   isActive 
-                    ? 'text-emerald-600 dark:text-emerald-400' 
-                    : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'
+                    ? 'text-brand-700 dark:text-brand-400' 
+                    : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
                 }`} />
                 <span>{item.label}</span>
               </NavLink>
@@ -131,13 +131,13 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* Bottom Button: Central de ajuda */}
-        <div className="pt-4 border-t border-gray-100 dark:border-[#16291E]">
+        <div className="pt-4 border-t border-gray-100 dark:border-night-800">
           <button
             onClick={() => {
               setIsMobileSidebarOpen(false);
               navigate(`${basePath}/settings`);
             }}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-emerald-500/50 dark:border-emerald-600/50 text-emerald-600 dark:text-emerald-400 text-xs font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-emerald-500/50 dark:border-emerald-600/50 text-brand-700 dark:text-brand-400 text-xs font-medium hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors cursor-pointer"
           >
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Central de ajuda</span>

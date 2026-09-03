@@ -1,70 +1,27 @@
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import { prisma } from '../lib/prisma.js';
 import { generateAccessToken, generateRefreshToken, hashToken } from '../utils/tokens.js';
-import { RegisterInput, LoginInput } from '../schemas/auth.schema.js';
+import { LoginInput, UpdateProfileInput } from '../schemas/auth.schema.js';
+
+const SALT_ROUNDS = 12;
+const INVALID_CREDENTIALS = 'Credenciais inválidas';
+const ACCOUNT_NOT_ACTIVE = 'Conta inativa ou suspensa. Entre em contato com o suporte.';
+
+/**
+ * Hash descartável de um valor aleatório, usado para gastar o mesmo tempo de
+ * bcrypt quando o e-mail não existe. Sem isso o tempo de resposta revela quais
+ * contas estão cadastradas. Nada consegue casar com ele.
+ */
+const TIMING_EQUALIZER_HASH = bcrypt.hashSync(crypto.randomBytes(32).toString('hex'), SALT_ROUNDS);
 
 export class AuthService {
   /**
-   * Registra um novo usuário criando o User e o Profile associado atomicamente
-   */
-  async register(data: RegisterInput) {
-    const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
-    });
-
-    if (existingUser) {
-      throw new Error('E-mail já está cadastrado');
-    }
-
-    const saltRounds = 12;
-    const passwordHash = await bcrypt.hash(data.password, saltRounds);
-
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        passwordHash,
-        role: 'ADMIN', // Primeiro usuário ou padrão configurável
-        status: 'ACTIVE',
-        profile: {
-          create: {
-            fullName: data.name || 'Usuário CopperOS',
-            displayName: data.name?.split(' ')[0] || 'Usuário',
-            timezone: 'America/Sao_Paulo',
-            locale: 'pt-BR',
-            themePreference: 'dark',
-          },
-        },
-        companyAccess: {
-          create: {
-            companyId: 'emp-copper-group', // Acesso padrão à holding
-            roleInCompany: 'ADMIN',
-          },
-        },
-      },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        status: true,
-        createdAt: true,
-        profile: {
-          select: {
-            id: true,
-            fullName: true,
-            displayName: true,
-            avatarUrl: true,
-            jobTitle: true,
-            department: true,
-          },
-        },
-      },
-    });
-
-    return user;
-  }
-
-  /**
-   * Autentica usuário, atualiza lastLoginAt e emite par de tokens
+   * Autentica o usuário, atualiza lastLoginAt e emite o par de tokens.
+   *
+   * A senha é verificada ANTES do status da conta, e todo fracasso de
+   * credencial devolve a mesma mensagem: um atacante sem senha válida não
+   * consegue distinguir "e-mail inexistente" de "e-mail existente".
    */
   async login(data: LoginInput) {
     const user = await prisma.user.findUnique({
@@ -76,31 +33,31 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('Credenciais inválidas');
-    }
-
-    if (user.status !== 'ACTIVE') {
-      throw new Error('Conta inativa ou suspensa. Entre em contato com o suporte.');
+      await bcrypt.compare(data.password, TIMING_EQUALIZER_HASH);
+      throw new Error(INVALID_CREDENTIALS);
     }
 
     const isPasswordValid = await bcrypt.compare(data.password, user.passwordHash);
     if (!isPasswordValid) {
-      throw new Error('Credenciais inválidas');
+      throw new Error(INVALID_CREDENTIALS);
     }
 
-    // Atualiza data do último login
+    // Só depois da senha correta é seguro detalhar o motivo do bloqueio.
+    if (user.status !== 'ACTIVE') {
+      throw new Error(ACCOUNT_NOT_ACTIVE);
+    }
+
     await prisma.user.update({
       where: { id: user.id },
       data: { lastLoginAt: new Date() },
     });
 
-    // Gera Access Token (JWT curto)
     const accessToken = generateAccessToken({
       sub: user.id,
       email: user.email,
     });
 
-    // Gera Refresh Token bruto para o cliente e armazena apenas o hash SHA-256 no PostgreSQL
+    // Gera Refresh Token bruto para o cliente e armazena apenas o hash SHA-256
     const { token: rawRefreshToken, expiresAt } = generateRefreshToken();
     const tokenHash = hashToken(rawRefreshToken);
 
@@ -149,13 +106,22 @@ export class AuthService {
       throw new Error('Refresh token inválido ou expirado');
     }
 
+    // O status é reavaliado a cada renovação: desativar a conta encerra a
+    // sessão de imediato, em vez de valer só quando o refresh token expirar.
+    if (savedToken.user.status !== 'ACTIVE') {
+      await prisma.refreshToken.updateMany({
+        where: { userId: savedToken.userId },
+        data: { revoked: true },
+      });
+      throw new Error(ACCOUNT_NOT_ACTIVE);
+    }
+
     // Invalida o token atual (Rotação atômica)
     await prisma.refreshToken.update({
       where: { id: savedToken.id },
       data: { revoked: true },
     });
 
-    // Gera novo par de tokens
     const newAccessToken = generateAccessToken({
       sub: savedToken.user.id,
       email: savedToken.user.email,
@@ -239,28 +205,36 @@ export class AuthService {
   }
 
   /**
-   * Atualiza os dados do perfil do usuário
+   * Atualiza os dados do perfil do usuário.
+   *
+   * Os campos são montados um a um, em vez de espalhar o corpo da requisição:
+   * assim nenhuma coluna fora desta lista (userId, document, ...) é gravável
+   * pelo cliente, mesmo que passe pela validação.
    */
-  async updateProfile(userId: string, data: {
-    fullName?: string;
-    displayName?: string;
-    avatarUrl?: string;
-    phone?: string;
-    jobTitle?: string;
-    department?: string;
-    bio?: string;
-    themePreference?: string;
-  }) {
+  async updateProfile(userId: string, data: UpdateProfileInput) {
+    const editable = {
+      fullName: data.fullName,
+      displayName: data.displayName,
+      avatarUrl: data.avatarUrl,
+      phone: data.phone,
+      jobTitle: data.jobTitle,
+      department: data.department,
+      bio: data.bio,
+      themePreference: data.themePreference,
+    };
+
+    const changes = Object.fromEntries(
+      Object.entries(editable).filter(([, value]) => value !== undefined)
+    );
+
     const profile = await prisma.profile.upsert({
       where: { userId },
       create: {
+        ...changes,
         userId,
         fullName: data.fullName || 'Usuário CopperOS',
-        ...data,
       },
-      update: {
-        ...data,
-      },
+      update: changes,
     });
 
     return profile;

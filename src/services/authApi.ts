@@ -48,8 +48,8 @@ export interface ManagedUser {
 async function authenticatedFetch(url: string, options: RequestInit = {}): Promise<Response> {
   let token = sessionStorage.getItem('copperos_session_auth_token') || '';
 
-  // Se o token for mock ou inexistente, tenta buscar um token real via Cookie HttpOnly
-  if (!token || token === 'CP_SEC_TOKEN_ACTIVE') {
+  // Sem token em memória, tenta obter um via Cookie HttpOnly de refresh
+  if (!token) {
     try {
       const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
         method: 'POST',
@@ -100,20 +100,8 @@ async function authenticatedFetch(url: string, options: RequestInit = {}): Promi
 }
 
 export const authApi = {
-  async register(name: string, email: string, password: string): Promise<AuthResponse> {
-    const res = await fetch(`${API_BASE_URL}/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.message || 'Erro ao registrar usuário');
-    }
-    return data;
-  },
+  // Não há auto-cadastro: contas são provisionadas pelo Time de TI via
+  // POST /api/users, sob autorização RBAC no servidor.
 
   async login(email: string, password: string): Promise<AuthResponse> {
     const res = await fetch(`${API_BASE_URL}/login`, {

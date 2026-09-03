@@ -1,6 +1,6 @@
 export type CompanyStatus = 'OPERATIONAL' | 'WARNING' | 'MAINTENANCE' | 'INACTIVE';
 
-export type UserRole = 'ADMIN' | 'MANAGER' | 'OPERATOR' | 'VIEWER';
+export type UserRole = 'SUPERADMIN' | 'ADMIN' | 'MANAGER' | 'OPERATOR' | 'VIEWER';
 
 export type Permission = 
   | 'company.view'

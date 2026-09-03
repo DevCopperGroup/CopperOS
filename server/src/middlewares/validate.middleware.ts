@@ -2,7 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { ZodTypeAny } from 'zod';
 
 /**
- * Middleware seguro e resiliente de validação com Zod
+ * Middleware seguro e resiliente de validação com Zod.
+ *
+ * Substitui body/query/params pelos valores já validados e coeridos, de modo
+ * que os controllers nunca vejam o corpo bruto da requisição.
  */
 export const validate = (schema: ZodTypeAny) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -20,7 +23,8 @@ export const validate = (schema: ZodTypeAny) => {
           message: err.message,
         }));
 
-        const primaryMessage = formattedErrors[0]?.message || 'Erro de validação nos campos informados';
+        const primaryMessage =
+          formattedErrors[0]?.message || 'Erro de validação nos campos informados';
 
         res.status(400).json({
           message: primaryMessage,
@@ -29,16 +33,28 @@ export const validate = (schema: ZodTypeAny) => {
         return;
       }
 
-      if (result.data?.body) req.body = result.data.body;
-      if (result.data?.query) req.query = result.data.query;
-      if (result.data?.params) req.params = result.data.params;
+      if (result.data?.body !== undefined) {
+        req.body = result.data.body;
+      }
+      if (result.data?.params !== undefined) {
+        req.params = result.data.params;
+      }
+      if (result.data?.query !== undefined) {
+        // No Express 5 req.query é um getter no protótipo: atribuir direto
+        // lança TypeError em módulo ESM (strict mode).
+        Object.defineProperty(req, 'query', {
+          value: result.data.query,
+          writable: true,
+          configurable: true,
+          enumerable: true,
+        });
+      }
 
       next();
-    } catch (err: any) {
-      console.error('Erro crítico na validação:', err);
-      res.status(400).json({
-        message: err.message || 'Erro de validação nos dados fornecidos',
-      });
+    } catch (err) {
+      // safeParseAsync não lança em falha de validação: cair aqui significa
+      // defeito no schema ou num refinement, ou seja, erro de servidor.
+      next(err);
     }
   };
 };

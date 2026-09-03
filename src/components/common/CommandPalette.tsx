@@ -87,16 +87,16 @@ export const CommandPalette: React.FC = () => {
       <div className="relative w-full max-w-2xl bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-100">
         {/* Search Bar */}
         <div className="flex items-center px-4 py-3.5 border-b border-gray-100 bg-gray-50/50">
-          <Search className="w-5 h-5 text-emerald-500 mr-3" />
+          <Search className="w-5 h-5 text-brand-600 dark:text-brand-400 mr-3" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Pesquisar empresas, módulos, CNPJs, clientes, relatórios..."
-            className="w-full bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none font-sans"
+            className="w-full bg-transparent text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 rounded-md font-sans"
           />
-          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono text-gray-400 bg-white border border-gray-200 rounded">
+          <kbd className="hidden sm:inline-block px-2 py-0.5 text-micro font-mono text-gray-600 dark:text-gray-400 bg-white border border-gray-200 rounded">
             ESC
           </kbd>
         </div>
@@ -106,8 +106,8 @@ export const CommandPalette: React.FC = () => {
           {/* Companies Section */}
           {filteredResults.companies.length > 0 && (
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-brand-700 dark:text-brand-400" />
                 Empresas & Unidades
               </div>
               <div className="space-y-1">
@@ -118,22 +118,22 @@ export const CommandPalette: React.FC = () => {
                     className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-left transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center font-bold text-emerald-600 text-xs">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center font-bold text-brand-700 dark:text-brand-400 text-xs">
                         {c.monogram || c.tradeName.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors flex items-center gap-2">
+                        <div className="text-xs font-semibold text-gray-900 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors flex items-center gap-2">
                           {c.tradeName}
-                          <span className="text-[11px] text-gray-400 font-normal">
+                          <span className="text-xs text-gray-600 dark:text-gray-400 font-normal">
                             CNPJ: {c.cnpj}
                           </span>
                         </div>
-                        <div className="text-[11px] text-gray-500 font-sans">
+                        <div className="text-xs text-gray-500 font-sans">
                           {c.sector}
                         </div>
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 transform group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-brand-700 dark:group-hover:text-brand-400 transform group-hover:translate-x-0.5 transition-all" />
                   </button>
                 ))}
               </div>
@@ -143,8 +143,8 @@ export const CommandPalette: React.FC = () => {
           {/* Modules Section */}
           {filteredResults.modules.length > 0 && (
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-brand-700 dark:text-brand-400" />
                 Módulos Operacionais
               </div>
               <div className="space-y-1">
@@ -155,17 +155,17 @@ export const CommandPalette: React.FC = () => {
                     className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-left transition-colors group"
                   >
                     <div>
-                      <div className="text-xs font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors flex items-center gap-2">
+                      <div className="text-xs font-semibold text-gray-900 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors flex items-center gap-2">
                         {m.name}
-                        <span className="text-[10px] px-1.5 py-0.2 bg-gray-100 border border-gray-200 text-gray-500 rounded">
+                        <span className="text-micro px-1.5 py-0.2 bg-gray-100 border border-gray-200 text-gray-500 rounded">
                           v{m.version}
                         </span>
                       </div>
-                      <div className="text-[11px] text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {m.description}
                       </div>
                     </div>
-                    <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-600 transition-colors" />
+                    <ExternalLink className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors" />
                   </button>
                 ))}
               </div>
@@ -175,8 +175,8 @@ export const CommandPalette: React.FC = () => {
           {/* Records Section */}
           {filteredResults.records.length > 0 && (
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
-                <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
+                <UserCheck className="w-3.5 h-3.5 text-brand-700 dark:text-brand-400" />
                 Cadastros & Entidades
               </div>
               <div className="space-y-1">
@@ -187,17 +187,17 @@ export const CommandPalette: React.FC = () => {
                     className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-left transition-colors group"
                   >
                     <div>
-                      <div className="text-xs font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors flex items-center gap-2">
+                      <div className="text-xs font-semibold text-gray-900 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors flex items-center gap-2">
                         {r.name}
-                        <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 rounded">
+                        <span className="text-micro text-emerald-700 bg-emerald-50 px-1.5 rounded">
                           {r.code}
                         </span>
                       </div>
-                      <div className="text-[11px] text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {r.detail} {r.document ? `• ${r.document}` : ''}
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors" />
+                    <ArrowRight className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors" />
                   </button>
                 ))}
               </div>
@@ -207,8 +207,8 @@ export const CommandPalette: React.FC = () => {
           {/* Reports Section */}
           {filteredResults.reports.length > 0 && (
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 px-2 mb-1.5 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-brand-700 dark:text-brand-400" />
                 Relatórios Executivos
               </div>
               <div className="space-y-1">
@@ -219,14 +219,14 @@ export const CommandPalette: React.FC = () => {
                     className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-left transition-colors group"
                   >
                     <div>
-                      <div className="text-xs font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors">
+                      <div className="text-xs font-semibold text-gray-900 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors">
                         {rep.title}
                       </div>
-                      <div className="text-[11px] text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {rep.category} • {rep.period} • Resp: {rep.responsible}
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors" />
+                    <ArrowRight className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors" />
                   </button>
                 ))}
               </div>
@@ -238,16 +238,16 @@ export const CommandPalette: React.FC = () => {
            filteredResults.modules.length === 0 && 
            filteredResults.records.length === 0 && 
            filteredResults.reports.length === 0 && (
-            <div className="text-center py-8 text-gray-400 text-xs font-mono">
+            <div className="text-center py-8 text-gray-600 dark:text-gray-400 text-xs font-mono">
               Nenhum resultado encontrado para "{query}"
             </div>
           )}
         </div>
 
         {/* Footer info */}
-        <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50 flex items-center justify-between text-[11px] text-gray-500">
+        <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50 flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center gap-1.5">
-            <Shield className="w-3.5 h-3.5 text-emerald-600" />
+            <Shield className="w-3.5 h-3.5 text-brand-700 dark:text-brand-400" />
             <span>CopperOS Command Search</span>
           </div>
           <span>Clique ou pressione ENTER para navegar</span>

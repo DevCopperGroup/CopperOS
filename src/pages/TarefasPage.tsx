@@ -143,9 +143,9 @@ export const TarefasPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button 
             onClick={() => alert('Visualização em calendário')}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#0A140F] border border-gray-200 dark:border-[#16291E] hover:border-emerald-500 dark:hover:border-emerald-500 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors shadow-xs cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-night-900 border border-gray-200 dark:border-night-800 hover:border-emerald-500 dark:hover:border-emerald-500 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-colors shadow-xs cursor-pointer"
           >
-            <CalendarIcon className="w-4 h-4 text-emerald-500" />
+            <CalendarIcon className="w-4 h-4 text-brand-600 dark:text-brand-400" />
             <span>Ver calendário</span>
           </button>
 
@@ -160,14 +160,14 @@ export const TarefasPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-gray-100 dark:border-[#16291E] pb-2 text-xs font-medium">
+      <div className="flex items-center gap-6 border-b border-gray-100 dark:border-night-800 pb-2 text-xs font-medium">
         {(['Minhas tarefas', 'Equipe', 'Projetos', 'Calendário'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`pb-2 transition-colors relative cursor-pointer ${
               activeTab === tab
-                ? 'text-emerald-600 dark:text-emerald-400 font-bold'
+                ? 'text-brand-700 dark:text-brand-400 font-bold'
                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
@@ -182,33 +182,33 @@ export const TarefasPage: React.FC = () => {
       {/* 4 Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1 */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs flex items-center justify-between transition-colors">
+        <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs flex items-center justify-between transition-colors">
           <div>
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Pendentes
             </div>
             <div className="text-xl font-bold text-gray-900 dark:text-white mt-1">
               18
             </div>
-            <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+            <div className="text-micro text-gray-600 dark:text-gray-400 mt-0.5">
               +5 hoje
             </div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-brand-700 dark:text-brand-400 flex items-center justify-center">
             <Clock className="w-4 h-4 stroke-[2]" />
           </div>
         </div>
 
         {/* Card 2 */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs flex items-center justify-between transition-colors">
+        <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs flex items-center justify-between transition-colors">
           <div>
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Em andamento
             </div>
             <div className="text-xl font-bold text-gray-900 dark:text-white mt-1">
               7
             </div>
-            <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+            <div className="text-micro text-gray-600 dark:text-gray-400 mt-0.5">
               3 prioridades
             </div>
           </div>
@@ -218,33 +218,33 @@ export const TarefasPage: React.FC = () => {
         </div>
 
         {/* Card 3 */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs flex items-center justify-between transition-colors">
+        <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs flex items-center justify-between transition-colors">
           <div>
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Concluídas hoje
             </div>
             <div className="text-xl font-bold text-gray-900 dark:text-white mt-1">
               12
             </div>
-            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5">
+            <div className="text-micro text-brand-700 dark:text-brand-400 mt-0.5">
               +20% vs ontem
             </div>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-brand-700 dark:text-brand-400 flex items-center justify-center">
             <CheckCircle2 className="w-4 h-4 stroke-[2]" />
           </div>
         </div>
 
         {/* Card 4 */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] shadow-xs flex items-center justify-between transition-colors">
+        <div className="p-4 rounded-2xl bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 shadow-xs flex items-center justify-between transition-colors">
           <div>
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               Atrasadas
             </div>
             <div className="text-xl font-bold text-gray-900 dark:text-white mt-1">
               3
             </div>
-            <div className="text-[10px] text-rose-500 mt-0.5">
+            <div className="text-micro text-rose-500 mt-0.5">
               Requer atenção
             </div>
           </div>
@@ -255,23 +255,23 @@ export const TarefasPage: React.FC = () => {
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-white dark:bg-[#0A140F] border border-gray-100 dark:border-[#16291E] rounded-2xl shadow-xs overflow-hidden transition-colors">
+      <div className="bg-white dark:bg-night-900 border border-gray-100 dark:border-night-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
         {/* Search & Actions Bar */}
-        <div className="p-4 border-b border-gray-100 dark:border-[#16291E] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-4 border-b border-gray-100 dark:border-night-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-gray-600 dark:text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Buscar tarefa..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-xs bg-gray-50/70 dark:bg-[#0E1A14] border border-gray-200/80 dark:border-[#16291E] rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full pl-10 pr-4 py-2 text-xs bg-gray-50/70 dark:bg-night-850 border border-gray-200/80 dark:border-night-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#16291E] rounded-xl border border-gray-200/80 dark:border-[#16291E] transition-colors cursor-pointer">
-              <Filter className="w-3.5 h-3.5 text-gray-400" />
+            <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-night-800 rounded-xl border border-gray-200/80 dark:border-night-800 transition-colors cursor-pointer">
+              <Filter className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400" />
               <span>Filtros</span>
             </button>
           </div>
@@ -281,7 +281,7 @@ export const TarefasPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-gray-100 dark:border-[#16291E] text-gray-400 dark:text-gray-500 text-[11px] font-medium">
+              <tr className="border-b border-gray-100 dark:border-night-800 text-gray-600 dark:text-gray-400 text-xs font-medium">
                 <th className="py-3 px-4 font-normal w-12"></th>
                 <th className="py-3 px-4 font-normal">Tarefa</th>
                 <th className="py-3 px-4 font-normal">Projeto</th>
@@ -291,7 +291,7 @@ export const TarefasPage: React.FC = () => {
                 <th className="py-3 px-4 font-normal">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50 dark:divide-[#16291E]/60">
+            <tbody className="divide-y divide-gray-50 dark:divide-night-800/60">
               {tasks
                 .filter(t => {
                   const matchSearch = t.title.toLowerCase().includes(search.toLowerCase()) || 
@@ -302,17 +302,17 @@ export const TarefasPage: React.FC = () => {
                   return matchSearch;
                 })
                 .map((task) => (
-                <tr key={task.id} className="hover:bg-gray-50/60 dark:hover:bg-[#0E1A14]/60 transition-colors">
+                <tr key={task.id} className="hover:bg-gray-50/60 dark:hover:bg-night-850/60 transition-colors">
                   <td className="py-3.5 px-4">
                     <input
                       type="checkbox"
                       checked={task.completed}
                       onChange={() => toggleComplete(task.id)}
-                      className="w-4 h-4 rounded text-emerald-500 border-gray-300 focus:ring-emerald-500 cursor-pointer"
+                      className="w-4 h-4 rounded text-brand-600 dark:text-brand-400 border-gray-300 focus:ring-emerald-500 cursor-pointer"
                     />
                   </td>
                   <td className="py-3.5 px-4 font-semibold text-gray-900 dark:text-white">
-                    <span className={task.completed ? 'line-through text-gray-400 dark:text-gray-500' : ''}>
+                    <span className={task.completed ? 'line-through text-gray-600 dark:text-gray-400' : ''}>
                       {task.title}
                     </span>
                   </td>
@@ -322,11 +322,11 @@ export const TarefasPage: React.FC = () => {
                   <td className="py-3.5 px-4 text-gray-600 dark:text-gray-400">
                     {task.assignee}
                   </td>
-                  <td className="py-3.5 px-4 text-gray-500 dark:text-gray-400 font-mono text-[11px]">
+                  <td className="py-3.5 px-4 text-gray-500 dark:text-gray-400 font-mono text-xs">
                     {task.dueDate}
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className={`text-[11px] font-medium ${
+                    <span className={`text-xs font-medium ${
                       task.priority === 'Alta' 
                         ? 'text-rose-500 font-semibold' 
                         : task.priority === 'Média'
@@ -337,9 +337,9 @@ export const TarefasPage: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-micro font-semibold ${
                       task.status === 'Em andamento'
-                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100/60 dark:border-emerald-800/40'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-brand-700 dark:text-brand-400 border border-emerald-100/60 dark:border-emerald-800/40'
                         : task.status === 'Concluída'
                         ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100/60 dark:border-blue-800/40'
                         : 'text-gray-500 dark:text-gray-400'
@@ -354,15 +354,15 @@ export const TarefasPage: React.FC = () => {
         </div>
 
         {/* Footer Pagination */}
-        <div className="p-4 border-t border-gray-100 dark:border-[#16291E] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[11px] text-gray-400">
+        <div className="p-4 border-t border-gray-100 dark:border-night-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-600 dark:text-gray-400">
           <div>
             Mostrando 1 a 5 de 28 tarefas
           </div>
           <div className="flex items-center gap-1.5 font-medium">
-            <button className="p-1 rounded text-gray-400 hover:text-gray-700 dark:hover:text-white">
+            <button className="p-1 rounded text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button className="w-6 h-6 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-center">
+            <button className="w-6 h-6 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-brand-700 dark:text-brand-400 font-bold flex items-center justify-center">
               1
             </button>
             <button className="w-6 h-6 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 flex items-center justify-center">
@@ -381,7 +381,7 @@ export const TarefasPage: React.FC = () => {
             <button className="w-6 h-6 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 flex items-center justify-center">
               6
             </button>
-            <button className="p-1 rounded text-gray-400 hover:text-gray-700 dark:hover:text-white">
+            <button className="p-1 rounded text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -406,7 +406,7 @@ export const TarefasPage: React.FC = () => {
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                 placeholder="Ex: Auditoria interna de estoque"
-                className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-[#0E1A14] border border-gray-200 dark:border-[#16291E] text-gray-900 dark:text-white"
+                className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-night-850 border border-gray-200 dark:border-night-800 text-gray-900 dark:text-white"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -418,7 +418,7 @@ export const TarefasPage: React.FC = () => {
                   type="text"
                   value={newTask.project}
                   onChange={(e) => setNewTask({ ...newTask, project: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-[#0E1A14] border border-gray-200 dark:border-[#16291E] text-gray-900 dark:text-white"
+                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-night-850 border border-gray-200 dark:border-night-800 text-gray-900 dark:text-white"
                 />
               </div>
               <div>
@@ -429,7 +429,7 @@ export const TarefasPage: React.FC = () => {
                   type="text"
                   value={newTask.assignee}
                   onChange={(e) => setNewTask({ ...newTask, assignee: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-[#0E1A14] border border-gray-200 dark:border-[#16291E] text-gray-900 dark:text-white"
+                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-night-850 border border-gray-200 dark:border-night-800 text-gray-900 dark:text-white"
                 />
               </div>
             </div>
@@ -442,7 +442,7 @@ export const TarefasPage: React.FC = () => {
                   type="text"
                   value={newTask.dueDate}
                   onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-[#0E1A14] border border-gray-200 dark:border-[#16291E] text-gray-900 dark:text-white"
+                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-night-850 border border-gray-200 dark:border-night-800 text-gray-900 dark:text-white"
                 />
               </div>
               <div>
@@ -452,7 +452,7 @@ export const TarefasPage: React.FC = () => {
                 <select
                   value={newTask.priority}
                   onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as any })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-[#0E1A14] border border-gray-200 dark:border-[#16291E] text-gray-900 dark:text-white"
+                  className="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-night-850 border border-gray-200 dark:border-night-800 text-gray-900 dark:text-white"
                 >
                   <option value="Alta">Alta</option>
                   <option value="Média">Média</option>
@@ -464,7 +464,7 @@ export const TarefasPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 rounded-xl border border-gray-200 dark:border-[#16291E] text-gray-600 dark:text-gray-400"
+                className="px-4 py-2 rounded-xl border border-gray-200 dark:border-night-800 text-gray-600 dark:text-gray-400"
               >
                 Cancelar
               </button>

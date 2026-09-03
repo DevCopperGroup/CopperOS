@@ -39,7 +39,7 @@ Implementação completa da API de autenticação corporativa com Login, Logout,
 ## 📦 O que foi desenvolvido:
 
 ### Endpoints da API REST (`/api/auth/`):
-- `POST /register`: Criação de conta com hash Bcrypt (salt factor 12) e validação de schema com Zod.
+- Sem auto-cadastro: contas são provisionadas apenas em `POST /api/users`, com hash Bcrypt (salt factor 12), validação Zod e autorização RBAC (`SUPERADMIN`/`ADMIN`).
 - `POST /login`: Validação de credenciais, geração de `accessToken` (JWT 15m) e atribuição de `refreshToken` (7 dias) em cookie seguro `HttpOnly`.
 - `POST /refresh`: Rotação atômica de refresh tokens com detecção de Token Replay Attack.
 - `POST /logout`: Invalidação da sessão ativa no PostgreSQL e remoção do cookie no cliente.

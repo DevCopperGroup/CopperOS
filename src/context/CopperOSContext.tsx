@@ -31,7 +31,7 @@ interface CopperOSContextType {
   
   // Auth state
   isAuthenticated: boolean;
-  loginSession: (token?: string, userData?: Partial<User>) => void;
+  loginSession: (token: string, userData?: Partial<User>) => void;
   logoutSession: () => void;
 
   // Data for current company
@@ -77,8 +77,12 @@ export const CopperOSProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return !!sessionStorage.getItem('copperos_session_auth_token');
   });
 
-  const loginSession = (token?: string, userData?: Partial<User>) => {
-    sessionStorage.setItem('copperos_session_auth_token', token || 'CP_SEC_TOKEN_ACTIVE');
+  // Só um access token real emitido pela API abre sessão: não há mais token
+  // simbólico de contingência que pudesse ser plantado à mão no sessionStorage.
+  const loginSession = (token: string, userData?: Partial<User>) => {
+    if (!token) return;
+
+    sessionStorage.setItem('copperos_session_auth_token', token);
     if (userData) {
       setCurrentUser(prev => {
         const updated = {

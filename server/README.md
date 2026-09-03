@@ -57,28 +57,15 @@ O servidor estará rodando em: `http://localhost:3333`
 
 ## 📡 Guia dos Endpoints
 
-### 1. Registro de Usuário
-- **Endpoint**: `POST /api/auth/register`
-- **Body**:
-```json
-{
-  "name": "Maria Silva",
-  "email": "maria@exemplo.com",
-  "password": "senhaSegura123"
-}
-```
-- **Resposta (201 Created)**:
-```json
-{
-  "message": "Usuário registrado com sucesso",
-  "user": {
-    "id": "c1f7a2d4-...",
-    "email": "maria@exemplo.com",
-    "name": "Maria Silva",
-    "createdAt": "2026-09-03T11:00:00.000Z"
-  }
-}
-```
+### 1. Provisionamento de Contas
+
+**Não existe auto-cadastro.** A API não expõe `POST /api/auth/register`: contas são
+criadas exclusivamente pelo Time de TI em `POST /api/users`, que exige um chamador
+autenticado com papel `SUPERADMIN` ou `ADMIN` (ver *Autorização (RBAC)* abaixo).
+
+A primeira conta administrativa deve ser semeada diretamente no banco, com um hash
+bcrypt gerado fora da aplicação — assim nenhum caminho público consegue criar um
+usuário privilegiado.
 
 ---
 
@@ -150,6 +137,28 @@ O servidor estará rodando em: `http://localhost:3333`
   }
 }
 ```
+
+---
+
+## 🔐 Autorização (RBAC)
+
+Hierarquia de papéis, do mais alto para o mais baixo:
+
+`SUPERADMIN` > `ADMIN` > `MANAGER` > `OPERATOR` > `VIEWER`
+
+Todas as rotas de `/api/users` (o Painel de TI) exigem `authenticate` **e**
+`requireRole('SUPERADMIN', 'ADMIN')`. Regras aplicadas em cada operação:
+
+| Regra | Motivo |
+|-------|--------|
+| O papel é lido do banco a cada requisição, nunca do JWT | Revogar acesso ou rebaixar alguém vale na hora, sem esperar o access token expirar |
+| Contas com status diferente de `ACTIVE` são rejeitadas | Suspensão tem efeito imediato |
+| Ninguém altera o próprio papel ou status pelo painel | Impede auto-promoção e auto-bloqueio |
+| O chamador precisa de patente **estritamente superior** à do alvo | Um `ADMIN` não mexe em outro `ADMIN` nem em um `SUPERADMIN` |
+| O chamador não concede papel acima do próprio | Impede escalada por procuração |
+| Trocar papel/status ou resetar senha revoga as sessões do alvo | Nenhum token antigo sobrevive à mudança de privilégio |
+
+Toda ação privilegiada emite uma linha `[AUDIT]` com autor, ação e alvo.
 
 ---
 

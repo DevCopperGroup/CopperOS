@@ -58,7 +58,7 @@ export const CopperLogo: React.FC<CopperLogoProps> = ({
 
       {/* Optional Corporate Tagline */}
       {showSubtitle && (
-        <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400 mt-1">
+        <span className="text-micro font-mono uppercase tracking-[0.2em] text-gray-600 dark:text-gray-400 mt-1">
           SISTEMA OPERACIONAL CORPORATIVO
         </span>
       )}

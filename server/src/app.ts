@@ -13,28 +13,47 @@ export const app = express();
 // Oculta header de fingerprinting de tecnologia
 app.disable('x-powered-by');
 
-// Cabeçalhos de segurança HTTP com Helmet
+// Quantos proxies à frente da API podem ser confiados para definir o IP real.
+// Precisa vir antes do rate limiter, que deriva a chave de req.ip.
+app.set('trust proxy', env.TRUST_PROXY);
+
+// Cabeçalhos de segurança HTTP com Helmet. A API só devolve JSON, então a CSP
+// pode ser a mais restritiva possível.
 app.use(
   helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+        baseUri: ["'none'"],
+        formAction: ["'none'"],
+      },
+    },
     crossOriginEmbedderPolicy: false,
   })
 );
 
-// Middlewares globais
+/**
+ * Origens autorizadas a enviar credenciais para a API.
+ * localhost só é aceito fora de produção.
+ */
+const allowedOrigins = new Set<string>([env.CLIENT_URL]);
+
+const isLocalDevOrigin = (origin: string): boolean =>
+  env.NODE_ENV !== 'production' &&
+  (/^http:\/\/localhost(:\d+)?$/.test(origin) || /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin));
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (
-        !origin ||
-        /^http:\/\/localhost(:\d+)?$/.test(origin) ||
-        /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin) ||
-        origin === env.CLIENT_URL
-      ) {
+      // Requisições sem Origin (curl, health check, same-origin) seguem normais.
+      if (!origin || allowedOrigins.has(origin) || isLocalDevOrigin(origin)) {
         callback(null, true);
-      } else {
-        callback(null, true);
+        return;
       }
+      // Nega sem lançar erro: o navegador bloqueia por ausência do header
+      // Access-Control-Allow-Origin, sem transformar isso num 500.
+      callback(null, false);
     },
     credentials: true,
   })
@@ -55,11 +74,11 @@ app.get('/', (_req, res) => {
     endpoints: {
       health: 'GET /health',
       auth: {
-        register: 'POST /api/auth/register',
         login: 'POST /api/auth/login',
         refresh: 'POST /api/auth/refresh',
         logout: 'POST /api/auth/logout',
         me: 'GET /api/auth/me',
+        profile: 'PUT /api/auth/profile',
       },
       it_admin: {
         listUsers: 'GET /api/users',

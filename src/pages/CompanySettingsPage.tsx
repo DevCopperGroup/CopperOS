@@ -37,7 +37,7 @@ export const CompanySettingsPage: React.FC = () => {
       {/* Header */}
       <div className="p-6 rounded-2xl bg-white border border-gray-200/90 shadow-card">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+          <span className="text-micro font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
             Configurações da Entidade
           </span>
           <span className="text-xs text-gray-500">
@@ -55,7 +55,7 @@ export const CompanySettingsPage: React.FC = () => {
 
       {savedNotice && (
         <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center gap-2 animate-in fade-in shadow-xs">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          <CheckCircle2 className="w-4 h-4 text-brand-700 dark:text-brand-400" />
           <span className="font-medium">Configurações atualizadas com sucesso para este workspace.</span>
         </div>
       )}
@@ -63,7 +63,7 @@ export const CompanySettingsPage: React.FC = () => {
       {/* Fiscal & Organizational Form */}
       <form onSubmit={handleSave} className="p-6 rounded-2xl bg-white border border-gray-200/90 shadow-card space-y-4 text-xs">
         <h2 className="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-2 border-b border-gray-100 pb-3">
-          <Building2 className="w-4 h-4 text-emerald-600" />
+          <Building2 className="w-4 h-4 text-brand-700 dark:text-brand-400" />
           <span>Identificação Fiscal & Cadastral</span>
         </h2>
 
@@ -98,7 +98,7 @@ export const CompanySettingsPage: React.FC = () => {
               value={currentCompany.cnpj}
               className="w-full bg-gray-100 border border-gray-200 rounded-lg p-2.5 text-gray-500 cursor-not-allowed"
             />
-            <span className="text-[10px] text-gray-400 mt-0.5 block">Chave fiscal protegida</span>
+            <span className="text-micro text-gray-600 dark:text-gray-400 mt-0.5 block">Chave fiscal protegida</span>
           </div>
 
           <div>
@@ -146,7 +146,7 @@ export const CompanySettingsPage: React.FC = () => {
       <div className="p-6 rounded-2xl bg-white border border-gray-200/90 shadow-card space-y-4">
         <div className="flex items-center justify-between border-b border-gray-100 pb-3">
           <h2 className="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <ShieldCheck className="w-4 h-4 text-brand-700 dark:text-brand-400" />
             <span>Controle de Acesso & Permissões (RBAC)</span>
           </h2>
           <Badge variant="copper">Role: {user.role}</Badge>
@@ -160,9 +160,9 @@ export const CompanySettingsPage: React.FC = () => {
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
             <div className="text-gray-900 font-bold flex items-center justify-between">
               <span>ADMIN (Executivo)</span>
-              <span className="text-[11px] text-emerald-700 font-semibold">Acesso Total</span>
+              <span className="text-xs text-emerald-700 font-semibold">Acesso Total</span>
             </div>
-            <div className="text-[11px] text-gray-500 mt-1">
+            <div className="text-xs text-gray-500 mt-1">
               Pode gerenciar empresas, habilitar módulos, editar cadastros e auditar telemetria.
             </div>
           </div>
@@ -170,9 +170,9 @@ export const CompanySettingsPage: React.FC = () => {
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
             <div className="text-gray-900 font-bold flex items-center justify-between">
               <span>MANAGER (Gerente de Unidade)</span>
-              <span className="text-[11px] text-emerald-700 font-semibold">Operações & Relatórios</span>
+              <span className="text-xs text-emerald-700 font-semibold">Operações & Relatórios</span>
             </div>
-            <div className="text-[11px] text-gray-500 mt-1">
+            <div className="text-xs text-gray-500 mt-1">
               Pode visualizar Torre de Controle, gerenciar cadastros e emitir relatórios executivos.
             </div>
           </div>

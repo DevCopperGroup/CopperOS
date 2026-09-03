@@ -28,3 +28,20 @@ export const generalLimiter = rateLimit({
     message: 'Limite de requisições excedido. Tente novamente mais tarde.',
   },
 });
+
+/**
+ * Rate Limiter para a rotação de refresh token.
+ *
+ * Mais folgado que o de login de propósito: o refresh token tem 40 bytes
+ * aleatórios (força bruta é inviável), e cada recarga de página consome uma
+ * renovação — um limite estrito derrubaria uso legítimo.
+ */
+export const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    message: 'Muitas renovações de sessão a partir deste IP. Tente novamente em alguns minutos.',
+  },
+});

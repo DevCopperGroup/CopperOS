@@ -30,13 +30,13 @@ export const AppLayout: React.FC = () => {
   const hideSidebar = isOverview || isModulesPage;
 
   return (
-    <div className="min-h-screen bg-[#FBFDFB] dark:bg-[#070F0B] text-gray-900 dark:text-gray-100 flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-gray-50 dark:bg-night-950 text-gray-900 dark:text-gray-100 flex flex-col font-sans transition-colors">
       <Header />
       <div className="flex flex-1 relative">
         {/* Only render Sidebar on operational sub-pages, NOT on overview / choose modules screen */}
         {!hideSidebar && <Sidebar />}
 
-        <main className={`flex-1 flex flex-col min-w-0 bg-[#FBFDFB] dark:bg-[#070F0B] transition-colors duration-200 ${!hideSidebar ? 'lg:pl-60' : ''}`}>
+        <main className={`flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-night-950 transition-colors duration-200 ${!hideSidebar ? 'lg:pl-60' : ''}`}>
           <div className="flex-1 w-full mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
             <Outlet />
           </div>
