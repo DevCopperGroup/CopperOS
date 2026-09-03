@@ -1,0 +1,14 @@
+<svg viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Upper dynamic green wave cable -->
+  <path d="M20 70C65 25 155 25 215 55" stroke="#00DC82" stroke-width="14" stroke-linecap="round" />
+  <!-- Copper cores / connectors at tip -->
+  <circle cx="24" cy="70" r="7" fill="#E28647" />
+  <circle cx="16" cy="74" r="5" fill="#C26A30" />
+  
+  <!-- Central Stylized D Emblem (Compound Path with transparent counter) -->
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M45 65H105C140 65 165 85 165 110C165 135 140 155 105 155H45V65ZM72 88H100C118 88 132 98 132 110C132 122 118 132 100 132H72V88Z" fill="#00DC82" />
+
+  <!-- Lower dynamic blue wave cable -->
+  <path d="M120 160C165 178 200 172 230 148" stroke="#38BDF8" stroke-width="12" stroke-linecap="round" />
+  <rect x="210" y="140" width="16" height="9" rx="3" fill="#38BDF8" transform="rotate(-15 210 140)" />
+</svg>

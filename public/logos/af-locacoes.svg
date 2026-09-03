@@ -1,0 +1,19 @@
+<svg viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Top Blue Bar -->
+  <rect x="135" y="30" width="95" height="26" rx="13" fill="#1B6CA8" />
+  <!-- Middle Blue Bar -->
+  <rect x="155" y="80" width="70" height="24" rx="12" fill="#1B6CA8" />
+  <!-- Bottom Blue Skewed Base -->
+  <rect x="40" y="132" width="75" height="24" rx="10" transform="skewX(-26)" fill="#1B6CA8" />
+  
+  <defs>
+    <linearGradient id="afSymbolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E87C38" />
+      <stop offset="50%" stop-color="#C85A20" />
+      <stop offset="100%" stop-color="#9C3B0E" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Stylized Industrial Copper 'A' -->
+  <path d="M125 30L35 160H80L108 116L136 160H180L125 30ZM122 80L110 98L98 80H122Z" fill="url(#afSymbolGrad)" />
+</svg>

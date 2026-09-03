@@ -1,0 +1,18 @@
+<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Ring with emerald styling -->
+  <circle cx="100" cy="100" r="82" stroke="#10B981" stroke-width="8" />
+  
+  <!-- Trunk and Main Branches -->
+  <path d="M100 135V75M100 135C90 152 68 162 50 168M100 135C110 152 132 162 150 168M100 105C72 92 56 112 45 125M100 105C128 92 144 112 155 125" stroke="#10B981" stroke-width="6.5" stroke-linecap="round" />
+  
+  <!-- Canopy Foliage Nodes -->
+  <circle cx="100" cy="50" r="11" fill="#10B981" />
+  <circle cx="75" cy="60" r="10" fill="#10B981" />
+  <circle cx="125" cy="60" r="10" fill="#10B981" />
+  <circle cx="52" cy="80" r="9.5" fill="#10B981" />
+  <circle cx="148" cy="80" r="9.5" fill="#10B981" />
+  <circle cx="85" cy="88" r="8" fill="#10B981" />
+  <circle cx="115" cy="88" r="8" fill="#10B981" />
+  <circle cx="68" cy="42" r="7" fill="#10B981" />
+  <circle cx="132" cy="42" r="7" fill="#10B981" />
+</svg>
