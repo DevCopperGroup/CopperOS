@@ -9,8 +9,7 @@ import {
   Lock,
   KeyRound,
   Fingerprint,
-  User as UserIcon,
-  CheckCircle2,
+  Info,
 } from 'lucide-react';
 import { ConstellationField } from '../ui/ConstellationField';
 import { useCopperOS } from '../../context/CopperOSContext';
@@ -33,8 +32,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
   const navigate = useNavigate();
   const { loginSession } = useCopperOS();
 
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [name, setName] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [securityToken, setSecurityToken] = useState('');
@@ -42,7 +39,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [securityScore] = useState(99.8);
 
   // Hidden Honeypot trap to detect automated bot scripts
@@ -75,12 +71,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
     };
   }, [lockoutSeconds]);
 
-  const handleAuthSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (lockoutSeconds > 0) return;
 
     setErrorMessage('');
-    setSuccessMessage('');
 
     if (honeypot.trim()) {
       setErrorMessage('Acesso negado: Detecção de bot / script não autorizado.');
@@ -96,39 +91,24 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
     }
 
     if (!cleanPassword) {
-      setErrorMessage('Autenticação Rejeitada: A senha de acesso é obrigatória.');
-      return;
-    }
-
-    if (authMode === 'register' && cleanPassword.length < 6) {
-      setErrorMessage('A senha deve ter pelo menos 6 caracteres.');
+      setErrorMessage('Autenticação Rejeitada: A chave de acesso é obrigatória.');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      if (authMode === 'register') {
-        // Fluxo de Cadastro via API PostgreSQL
-        await authApi.register(name.trim() || 'Usuário CopperOS', cleanIdentifier, cleanPassword);
-        setSuccessMessage('Conta criada com sucesso! Realizando autenticação...');
-        
-        // Faz login automático imediatamente após o cadastro
+      // 1. Autenticação na API Node.js + PostgreSQL
+      try {
         const loginData = await authApi.login(cleanIdentifier, cleanPassword);
         completeSuccessfulLogin(loginData.accessToken, loginData.user);
-      } else {
-        // Fluxo de Login: tenta a API Node.js/PostgreSQL primeiro
-        try {
-          const loginData = await authApi.login(cleanIdentifier, cleanPassword);
-          completeSuccessfulLogin(loginData.accessToken, loginData.user);
-        } catch (apiError: any) {
-          // Fallback para hash local em caso de ambiente mock
-          const inputHash = await computeCryptoDigest(`${cleanIdentifier}:${cleanPassword}`);
-          if (inputHash === AUTH_VAULT_SIGNATURE) {
-            completeSuccessfulLogin();
-          } else {
-            handleFailedAttempt(apiError?.message || 'Credenciais inválidas');
-          }
+      } catch (apiError: any) {
+        // 2. Fallback de contingência local SHA-256
+        const inputHash = await computeCryptoDigest(`${cleanIdentifier}:${cleanPassword}`);
+        if (inputHash === AUTH_VAULT_SIGNATURE) {
+          completeSuccessfulLogin();
+        } else {
+          handleFailedAttempt(apiError?.message || 'Credenciais inválidas');
         }
       }
     } catch (err: any) {
@@ -213,7 +193,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
         </div>
       )}
 
-      {/* Hero Esquerdo */}
+      {/* Hero Esquerdo (Constellation Field WebGL) */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#070F0B] border-r border-[#12231A] relative flex-col justify-between p-12 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <ConstellationField
@@ -259,7 +239,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
           </div>
 
           <p className="text-sm text-white/90 leading-relaxed font-medium drop-shadow-[0_1px_8px_rgba(0,0,0,0.95)]">
-            Acesso autenticado via tokens JWT e PostgreSQL. Todas as sessões são validadas criptograficamente pelo servidor.
+            Acesso restrito e criptografado. Todas as conexões são auditadas e validadas pelo Centro de Operações de Segurança (SOC).
           </p>
 
           <div className="p-3.5 rounded-xl bg-[#0A140F]/90 border border-[#163324] text-[11px] font-mono space-y-1.5 shadow-inner">
@@ -279,7 +259,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
         <div className="relative z-10 flex items-center justify-between">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#0A140F]/90 backdrop-blur-md border border-[#00DC82]/40 text-xs font-mono text-[#00DC82] shadow-[0_0_15px_rgba(0,220,130,0.2),0_4px_12px_rgba(0,0,0,0.8)]">
             <span className="w-2 h-2 rounded-full bg-[#00DC82] animate-pulse" />
-            <span className="font-semibold">API NODE.JS + POSTGRES ATIVA</span>
+            <span className="font-semibold">BLINDAGEM ATIVA • 100% ONLINE</span>
           </div>
           <span className="text-[10px] font-mono text-gray-400">
             ID: {deviceFingerprint}
@@ -287,7 +267,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
         </div>
       </div>
 
-      {/* Painel Direito do Formulário */}
+      {/* Painel Direito do Formulário de Login */}
       <div className="w-full lg:w-1/2 bg-white flex flex-col justify-between p-6 sm:p-12 overflow-y-auto">
         <div className="w-full max-w-sm mx-auto my-auto space-y-6">
           {/* Header */}
@@ -295,7 +275,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
             <div className="flex items-center justify-between mb-2">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-[10px] font-semibold font-mono text-emerald-800 border border-emerald-200">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                API DE AUTENTICAÇÃO
+                ACESSO CORPORATIVO RESTRITO
               </span>
               <span className="text-[10px] font-mono text-gray-400">
                 PORTA: 3333
@@ -303,39 +283,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
             </div>
 
             <h2 className="text-2xl font-bold tracking-tight text-[#111827]">
-              {authMode === 'login' ? 'Entrar no CopperOS' : 'Criar Nova Conta'}
+              Autenticação Corporativa
             </h2>
             <p className="text-xs text-[#6B7280]">
-              {authMode === 'login'
-                ? 'Informe seu e-mail corporativo e senha cadastrada'
-                : 'Cadastre suas credenciais para acessar o workspace'}
+              Informe seu e-mail e chave de acesso segura do CopperOS
             </p>
-          </div>
-
-          {/* Seletor de Modo (Entrar / Criar Conta) */}
-          <div className="grid grid-cols-2 p-1 bg-gray-100 rounded-lg text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => { setAuthMode('login'); setErrorMessage(''); setSuccessMessage(''); }}
-              className={`py-2 rounded-md transition-all cursor-pointer ${
-                authMode === 'login'
-                  ? 'bg-white text-gray-900 shadow-xs'
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}
-            >
-              Entrar (Login)
-            </button>
-            <button
-              type="button"
-              onClick={() => { setAuthMode('register'); setErrorMessage(''); setSuccessMessage(''); }}
-              className={`py-2 rounded-md transition-all cursor-pointer ${
-                authMode === 'register'
-                  ? 'bg-white text-gray-900 shadow-xs'
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}
-            >
-              Criar Conta
-            </button>
           </div>
 
           {/* Bloqueio por tentativas */}
@@ -357,16 +309,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
             </div>
           )}
 
-          {/* Mensagem de Sucesso */}
-          {successMessage && (
-            <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-start space-x-2.5 animate-in fade-in duration-200">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <span>{successMessage}</span>
-            </div>
-          )}
-
           {/* Formulário */}
-          <form onSubmit={handleAuthSubmit} className="space-y-4">
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
             <input 
               type="text" 
               name="copper_bot_check" 
@@ -377,36 +321,17 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
               autoComplete="off" 
             />
 
-            {/* Campo Nome (Apenas no Registro) */}
-            {authMode === 'register' && (
-              <div className="space-y-1.5 animate-in fade-in duration-200">
-                <label className="block text-xs font-semibold text-[#111827] flex items-center gap-1">
-                  <UserIcon className="w-3.5 h-3.5 text-gray-500" />
-                  <span>Nome Completo</span>
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Seu Nome"
-                  disabled={isLoading}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] text-xs text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:bg-white focus:border-[#00DC82] focus:ring-2 focus:ring-[#00DC82]/20 transition-all"
-                  required
-                />
-              </div>
-            )}
-
             {/* Campo E-mail */}
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-[#111827] flex items-center justify-between">
                 <span>E-mail Corporativo</span>
-                <span className="text-[10px] font-mono text-gray-400">PostgreSQL DB</span>
+                <span className="text-[10px] font-mono text-gray-400">@copperos.com</span>
               </label>
               <input
                 type="email"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="usuario@empresa.com"
+                placeholder="admin@copperos.com"
                 disabled={isLoading || lockoutSeconds > 0}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] text-xs text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:bg-white focus:border-[#00DC82] focus:ring-2 focus:ring-[#00DC82]/20 transition-all font-mono"
                 autoComplete="email"
@@ -419,7 +344,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
               <div className="flex items-center justify-between">
                 <label className="block text-xs font-semibold text-[#111827] flex items-center gap-1">
                   <KeyRound className="w-3.5 h-3.5 text-gray-500" />
-                  <span>Senha</span>
+                  <span>Chave de Acesso (Senha)</span>
                 </label>
                 <span className="text-[10px] font-mono text-emerald-600">
                   Bcrypt
@@ -434,7 +359,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
                   placeholder="••••••••••••"
                   disabled={isLoading || lockoutSeconds > 0}
                   className="w-full px-3.5 py-2.5 rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] text-xs text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:bg-white focus:border-[#00DC82] focus:ring-2 focus:ring-[#00DC82]/20 transition-all pr-10 font-mono tracking-wider"
-                  autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
+                  autoComplete="current-password"
                   required
                 />
                 <button
@@ -452,10 +377,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
               <div className="flex items-center justify-between">
                 <label className="block text-xs font-semibold text-[#111827] flex items-center gap-1">
                   <Fingerprint className="w-3.5 h-3.5 text-gray-500" />
-                  <span>Identificador do Terminal</span>
+                  <span>Terminal de Sessão</span>
                 </label>
                 <span className="text-[10px] font-mono text-gray-400">
-                  Sessão Única
+                  Auto-Validado
                 </span>
               </div>
               <input
@@ -468,19 +393,17 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
               />
             </div>
 
-            {authMode === 'login' && (
-              <div className="flex items-center justify-between pt-1">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-[#D1D5DB] text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <span className="text-xs text-[#6B7280]">Manter conectado (Refresh Token)</span>
-                </label>
-              </div>
-            )}
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-[#D1D5DB] text-emerald-600 focus:ring-emerald-500"
+                />
+                <span className="text-xs text-[#6B7280]">Manter conectado (Refresh Token)</span>
+              </label>
+            </div>
 
             <button
               type="submit"
@@ -488,23 +411,31 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
               className="w-full py-2.5 bg-[#00DC82] hover:bg-[#00C16A] text-[#0A140F] font-bold text-xs rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer group"
             >
               {isLoading ? (
-                <span>Processando na API...</span>
+                <span>Validando no Servidor...</span>
               ) : (
                 <>
                   <ShieldCheck className="w-4 h-4" />
-                  <span>{authMode === 'login' ? 'Entrar com Segurança' : 'Criar Conta e Acessar'}</span>
+                  <span>Autenticar com Segurança Máxima</span>
                 </>
               )}
             </button>
 
+            {/* Informação sobre provisionamento de contas */}
+            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200 text-[11px] text-gray-600 flex items-start space-x-2">
+              <Info className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+              <span>
+                Novas credenciais são provisionadas exclusivamente pelo <strong>Time de TI</strong> dentro do Hub de Administração.
+              </span>
+            </div>
+
             {/* Bypass Rápido */}
-            <div className="pt-2">
+            <div className="pt-1">
               <button
                 type="button"
                 onClick={() => completeSuccessfulLogin()}
                 className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition-all flex items-center justify-center space-x-2 cursor-pointer"
               >
-                <span>⚡ Acesso Rápido de Demonstração</span>
+                <span>⚡ Acesso Direto de Demonstração</span>
               </button>
             </div>
           </form>
@@ -513,16 +444,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onSuccess }) => {
         {/* Footer */}
         <div className="text-center pt-6 space-y-1">
           <div className="flex items-center justify-center gap-2 text-[10px] font-mono text-gray-400">
-            <span>NODE.JS</span>
-            <span>•</span>
-            <span>EXPRESS</span>
+            <span>TLS 1.3</span>
             <span>•</span>
             <span>POSTGRESQL</span>
             <span>•</span>
-            <span>PRISMA</span>
+            <span>ZERO-TRUST SOC</span>
           </div>
           <p className="text-[11px] text-[#9CA3AF]">
-            © {new Date().getFullYear()} Copper Group Enterprise. Autenticação Integrada.
+            © {new Date().getFullYear()} Copper Group Enterprise. Blindagem Criptográfica Ativa.
           </p>
         </div>
       </div>
