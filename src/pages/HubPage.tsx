@@ -252,15 +252,15 @@ export const HubPage: React.FC = () => {
         {/* Hero CTA Card: Dashboard Geral da Holding (Diferenciado) */}
         <div 
           onClick={() => navigate('/dashboard')}
-          className="relative overflow-hidden rounded-3xl p-5 sm:p-6 bg-gradient-to-r from-emerald-950/50 via-[#0B1510] to-[#070F0B] border-2 border-emerald-500/40 hover:border-emerald-400 shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
+          className="relative overflow-hidden rounded-3xl p-5 sm:p-6 bg-gradient-to-r from-emerald-50/90 via-white to-emerald-50/50 dark:from-emerald-950/50 dark:via-[#0B1510] dark:to-[#070F0B] border-2 border-emerald-500/40 hover:border-emerald-500 shadow-card hover:shadow-card-hover dark:shadow-xl dark:hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
         >
           <div className="flex items-center gap-4">
-            <div className="w-13 h-13 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-[#070F0B] transition-all duration-300 shadow-xs shrink-0">
+            <div className="w-13 h-13 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 dark:border-emerald-500/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-[#070F0B] transition-all duration-300 shadow-xs shrink-0">
               <BarChart3 className="w-6 h-6 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                   Holding Copper Group
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-[#070F0B]">
@@ -276,10 +276,10 @@ export const HubPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-emerald-500/20">
+          <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-100 dark:border-emerald-500/20">
             <div className="flex flex-col text-left sm:text-right font-mono">
-              <span className="text-xs font-bold text-emerald-400">R$ 4.82M MTD</span>
-              <span className="text-[10px] text-gray-400">4 unidades ativas</span>
+              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">R$ 4.82M MTD</span>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400">4 unidades ativas</span>
             </div>
             <div className="px-4 py-2.5 rounded-xl bg-emerald-500 group-hover:bg-emerald-400 text-[#070F0B] font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors shrink-0">
               <span>Acessar Painel Executivo</span>
