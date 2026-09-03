@@ -15,19 +15,25 @@ export const validate = (schema: AnyZodObject) => {
       req.params = parsed.params ?? req.params;
 
       next();
-    } catch (error) {
-      if (error instanceof ZodError) {
+    } catch (error: any) {
+      const isZod = error instanceof ZodError || error?.name === 'ZodError' || Array.isArray(error?.issues) || Array.isArray(error?.errors);
+
+      if (isZod) {
+        const issues = error.issues || error.errors || [];
+        const formattedErrors = issues.map((err: any) => ({
+          field: err.path.join('.').replace(/^(body|query|params)\./, ''),
+          message: err.message,
+        }));
+
         res.status(400).json({
-          message: 'Erro de validação nos campos informados',
-          errors: error.errors.map((err) => ({
-            field: err.path.join('.').replace(/^(body|query|params)\./, ''),
-            message: err.message,
-          })),
+          message: formattedErrors[0]?.message || 'Erro de validação nos campos informados',
+          errors: formattedErrors,
         });
         return;
       }
 
-      res.status(500).json({ message: 'Erro interno na validação' });
+      console.error('Erro não esperado no middleware de validação:', error);
+      res.status(500).json({ message: 'Erro interno na validação dos dados' });
     }
   };
 };
