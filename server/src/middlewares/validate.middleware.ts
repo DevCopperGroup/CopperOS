@@ -1,39 +1,44 @@
 import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError } from 'zod';
+import { ZodTypeAny } from 'zod';
 
-export const validate = (schema: AnyZodObject) => {
+/**
+ * Middleware seguro e resiliente de validação com Zod
+ */
+export const validate = (schema: ZodTypeAny) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const parsed = await schema.parseAsync({
-        body: req.body,
-        query: req.query,
-        params: req.params,
+      const result = await schema.safeParseAsync({
+        body: req.body || {},
+        query: req.query || {},
+        params: req.params || {},
       });
 
-      req.body = parsed.body ?? req.body;
-      req.query = parsed.query ?? req.query;
-      req.params = parsed.params ?? req.params;
-
-      next();
-    } catch (error: any) {
-      const isZod = error instanceof ZodError || error?.name === 'ZodError' || Array.isArray(error?.issues) || Array.isArray(error?.errors);
-
-      if (isZod) {
-        const issues = error.issues || error.errors || [];
-        const formattedErrors = issues.map((err: any) => ({
+      if (!result.success) {
+        const issues = result.error.issues || [];
+        const formattedErrors = issues.map((err) => ({
           field: err.path.join('.').replace(/^(body|query|params)\./, ''),
           message: err.message,
         }));
 
+        const primaryMessage = formattedErrors[0]?.message || 'Erro de validação nos campos informados';
+
         res.status(400).json({
-          message: formattedErrors[0]?.message || 'Erro de validação nos campos informados',
+          message: primaryMessage,
           errors: formattedErrors,
         });
         return;
       }
 
-      console.error('Erro não esperado no middleware de validação:', error);
-      res.status(500).json({ message: 'Erro interno na validação dos dados' });
+      if (result.data?.body) req.body = result.data.body;
+      if (result.data?.query) req.query = result.data.query;
+      if (result.data?.params) req.params = result.data.params;
+
+      next();
+    } catch (err: any) {
+      console.error('Erro crítico na validação:', err);
+      res.status(400).json({
+        message: err.message || 'Erro de validação nos dados fornecidos',
+      });
     }
   };
 };
