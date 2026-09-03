@@ -6,12 +6,14 @@ import {
   Plus, 
   X,
   Moon,
-  Sun
+  Sun,
+  ShieldCheck
 } from 'lucide-react';
 import { useCopperOS } from '../context/CopperOSContext';
 import { CopperLogo } from '../components/common/CopperLogo';
 import { Modal } from '../components/common/Modal';
 import { CommandPalette } from '../components/common/CommandPalette';
+import { ITAdminModal } from '../components/it/ITAdminModal';
 import { CompanyStatus } from '../types';
 
 export const HubPage: React.FC = () => {
@@ -28,6 +30,7 @@ export const HubPage: React.FC = () => {
 
   const [search, setSearch] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isITModalOpen, setIsITModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -102,6 +105,17 @@ export const HubPage: React.FC = () => {
     >
       {/* Top Bar with Dark Mode Toggle & User & Logout */}
       <div className="max-w-6xl w-full mx-auto flex items-center justify-end gap-3 mb-2">
+        {/* Botão de Controle de TI */}
+        <button
+          onClick={() => setIsITModalOpen(true)}
+          type="button"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+          title="Gestão de Usuários e Segurança de TI"
+        >
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span>Painel de TI</span>
+        </button>
+
         {/* Dark Mode Toggle Button */}
         <button
           onClick={toggleDarkMode}
@@ -452,6 +466,7 @@ export const HubPage: React.FC = () => {
       </Modal>
 
       <CommandPalette />
+      <ITAdminModal isOpen={isITModalOpen} onClose={() => setIsITModalOpen(false)} />
     </div>
   );
 };
